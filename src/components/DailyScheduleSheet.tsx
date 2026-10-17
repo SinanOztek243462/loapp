@@ -368,81 +368,96 @@ export const DailyScheduleSheet: React.FC<DailyScheduleSheetProps> = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
-          {dayAutoQuotas.map((h) => {
-            const targetVal = h.dailyTargetValue ?? 1;
-            const unit = h.unit || 'Gün';
-            const stepVal = h.stepValue ?? 1;
-            const isCompleted = h.completedDates.includes(selectedDate);
-            const rawProg = h.dailyProgress?.[selectedDate] ?? (isCompleted ? targetVal : 0);
-            const currentProg = isCompleted ? targetVal : Math.min(targetVal, rawProg);
-            const pct = Math.min(100, Math.round((currentProg / targetVal) * 100));
+        {dayAutoQuotas.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-slate-800 bg-slate-900/40 px-3 py-2 text-xs text-slate-400 flex items-center justify-between">
+            <span>
+              Henüz her güne otomatik atanan sabit hedefiniz (Örn: 3 Litre Su, 30 Sayfa Kitap) yok.
+            </span>
+            <button
+              type="button"
+              onClick={() => onOpenRoutinesModal('quotas')}
+              className="text-cyan-400 hover:text-cyan-300 font-bold underline ml-2 shrink-0"
+            >
+              1 Kez Tanımla &rarr;
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
+            {dayAutoQuotas.map((h) => {
+              const targetVal = h.dailyTargetValue ?? 1;
+              const unit = h.unit || 'Gün';
+              const stepVal = h.stepValue ?? 1;
+              const isCompleted = h.completedDates.includes(selectedDate);
+              const rawProg = h.dailyProgress?.[selectedDate] ?? (isCompleted ? targetVal : 0);
+              const currentProg = isCompleted ? targetVal : Math.min(targetVal, rawProg);
+              const pct = Math.min(100, Math.round((currentProg / targetVal) * 100));
 
-            return (
-              <div
-                key={h.id}
-                className={`rounded-xl border px-3 py-2 flex flex-col justify-between gap-1.5 transition ${
-                  isCompleted
-                    ? 'border-emerald-500/40 bg-emerald-950/25'
-                    : 'border-slate-800 bg-slate-900/90'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1.5">
-                  <span
-                    className={`text-xs font-bold truncate ${
-                      isCompleted ? 'text-emerald-300' : 'text-white'
-                    }`}
-                    title={h.title}
-                  >
-                    {h.title}
-                  </span>
-                  <span className="font-mono text-[10px] font-extrabold text-cyan-300 shrink-0">
-                    {currentProg} / {targetVal} {unit}
-                  </span>
-                </div>
-
-                {/* Progress bar + Action buttons */}
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden">
-                    <div
-                      className={`h-full transition-all ${
-                        isCompleted ? 'bg-emerald-400' : 'bg-cyan-400'
+              return (
+                <div
+                  key={h.id}
+                  className={`rounded-xl border px-3 py-2 flex flex-col justify-between gap-1.5 transition ${
+                    isCompleted
+                      ? 'border-emerald-500/40 bg-emerald-950/25'
+                      : 'border-slate-800 bg-slate-900/90'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-1.5">
+                    <span
+                      className={`text-xs font-bold truncate ${
+                        isCompleted ? 'text-emerald-300' : 'text-white'
                       }`}
-                      style={{ width: `${pct}%` }}
-                    />
+                      title={h.title}
+                    >
+                      {h.title}
+                    </span>
+                    <span className="font-mono text-[10px] font-extrabold text-cyan-300 shrink-0">
+                      {currentProg} / {targetVal} {unit}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
-                    {targetVal > 1 && !isCompleted && (
+                  {/* Progress bar + Action buttons */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                      <div
+                        className={`h-full transition-all ${
+                          isCompleted ? 'bg-emerald-400' : 'bg-cyan-400'
+                        }`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      {targetVal > 1 && !isCompleted && (
+                        <button
+                          type="button"
+                          onClick={() => onIncrementHabitProgress(h.id, selectedDate)}
+                          className="rounded-md bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-500/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-cyan-200 transition"
+                          title={`+${stepVal} ${unit} ekle`}
+                        >
+                          +{stepVal}
+                        </button>
+                      )}
+
                       <button
                         type="button"
-                        onClick={() => onIncrementHabitProgress(h.id, selectedDate)}
-                        className="rounded-md bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-500/40 px-1.5 py-0.5 font-mono text-[10px] font-bold text-cyan-200 transition"
-                        title={`+${stepVal} ${unit} ekle`}
+                        onClick={() => onToggleHabitDate(h.id, selectedDate)}
+                        className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold transition flex items-center gap-0.5 border ${
+                          isCompleted
+                            ? 'bg-emerald-500/25 border-emerald-500/50 text-emerald-300'
+                            : 'bg-slate-800 hover:bg-emerald-600/30 border-slate-700 text-slate-300 hover:text-emerald-200'
+                        }`}
+                        title={isCompleted ? 'Tamamlandı (+25 KP) — Geri almak için tıkla' : 'Tamamlandı işaretle (+25 KP)'}
                       >
-                        +{stepVal}
+                        <Check className="h-3 w-3" />
+                        <span>{isCompleted ? '+25 KP' : 'Bitir'}</span>
                       </button>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={() => onToggleHabitDate(h.id, selectedDate)}
-                      className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold transition flex items-center gap-0.5 border ${
-                        isCompleted
-                          ? 'bg-emerald-500/25 border-emerald-500/50 text-emerald-300'
-                          : 'bg-slate-800 hover:bg-emerald-600/30 border-slate-700 text-slate-300 hover:text-emerald-200'
-                      }`}
-                      title={isCompleted ? 'Tamamlandı (+25 KP) — Geri almak için tıkla' : 'Tamamlandı işaretle (+25 KP)'}
-                    >
-                      <Check className="h-3 w-3" />
-                      <span>{isCompleted ? '+25 KP' : 'Bitir'}</span>
-                    </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Main Content Area */}

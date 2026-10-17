@@ -93,260 +93,49 @@ export const DEFAULT_REWARDS: RewardItem[] = [
   },
 ];
 
-export function getInitialTasks(todayStr: string): ScheduleTask[] {
-  const tomorrow = new Date(todayStr + 'T12:00:00');
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = formatDateISO(tomorrow);
+export const LEGACY_MOCK_TASK_IDS = [
+  'task-1',
+  'task-2',
+  'task-3',
+  'task-4',
+  'task-5',
+  'task-6',
+  'task-y1',
+  'task-y2',
+  'task-f1',
+  'task-f2',
+];
 
-  const inThreeDays = new Date(todayStr + 'T12:00:00');
-  inThreeDays.setDate(inThreeDays.getDate() + 3);
-  const threeDaysStr = formatDateISO(inThreeDays);
+export const LEGACY_MOCK_ROUTINE_IDS = ['rout-shift', 'rout-morning', 'rout-sport'];
 
-  const yesterday = new Date(todayStr + 'T12:00:00');
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = formatDateISO(yesterday);
+export const LEGACY_MOCK_HABIT_IDS = [
+  'hab-1',
+  'hab-2',
+  'hab-3',
+  'hab-4',
+  'hab-5',
+  'hab-water',
+  'hab-book',
+  'hab-clean-food',
+  'hab-steps',
+];
 
-  return [
-    {
-      id: 'task-1',
-      date: todayStr,
-      startTime: '08:30',
-      endTime: '09:30',
-      title: 'Sabah Rutini, Kahvaltı & Gün Planlaması',
-      categoryId: 'cat-routine',
-      priority: 'medium',
-      status: 'approved',
-      notes: 'Kahve, vitaminler ve günlük hedeflerin kontrolü',
-      approvedDurationMinutes: 60,
-    },
-    {
-      id: 'task-2',
-      date: todayStr,
-      startTime: '09:30',
-      endTime: '12:00',
-      title: 'Derin Odak: Proje Geliştirme Bloğu #1',
-      categoryId: 'cat-work',
-      priority: 'critical',
-      status: 'approved',
-      notes: 'Telefon sessizde, bildirimler kapalı çalışıldı.',
-      approvedDurationMinutes: 150,
-    },
-    {
-      id: 'task-3',
-      date: todayStr,
-      startTime: '12:30',
-      endTime: '14:00',
-      title: 'Antrenman & Duş',
-      categoryId: 'cat-health',
-      priority: 'high',
-      status: 'approved',
-      notes: 'Üst vücut + 20 dk kardiyo',
-      approvedDurationMinutes: 90,
-    },
-    {
-      id: 'task-4',
-      date: todayStr,
-      startTime: '14:00',
-      endTime: '15:15',
-      title: 'Yeni Sistem Mimarisinin İncelenmesi & Dokümantasyon',
-      categoryId: 'cat-study',
-      priority: 'high',
-      status: 'awaiting_approval',
-      notes: 'Süresi doldu — onayınızı bekliyor!',
-      notified: false,
-    },
-    {
-      id: 'task-5',
-      date: todayStr,
-      startTime: '16:00',
-      endTime: '18:00',
-      title: 'Odak Bloğu #2: Kodlama ve Testler',
-      categoryId: 'cat-work',
-      priority: 'high',
-      status: 'planned',
-      notes: 'Modüllerin entegrasyonu yapılacak',
-    },
-    {
-      id: 'task-6',
-      date: todayStr,
-      startTime: '19:30',
-      endTime: '21:00',
-      title: 'Kitap Okuma & Dil Pratiği',
-      categoryId: 'cat-study',
-      priority: 'medium',
-      status: 'planned',
-      notes: 'En az 30 sayfa okuma hedefi',
-    },
-    // Yesterday's approved tasks so weekly pie chart & XP look rich immediately
-    {
-      id: 'task-y1',
-      date: yesterdayStr,
-      startTime: '09:00',
-      endTime: '12:30',
-      title: 'Haftalık Rapor & Sistem Geliştirme',
-      categoryId: 'cat-work',
-      priority: 'high',
-      status: 'approved',
-      notes: 'Tamamlandı',
-      approvedDurationMinutes: 210,
-    },
-    {
-      id: 'task-y2',
-      date: yesterdayStr,
-      startTime: '14:00',
-      endTime: '16:00',
-      title: 'Teknik Makale & Kurs Takibi',
-      categoryId: 'cat-study',
-      priority: 'medium',
-      status: 'approved',
-      notes: 'Bölüm 4 bitirildi',
-      approvedDurationMinutes: 120,
-    },
-    // Future appointments visible in Monthly Calendar preview without entering the day!
-    {
-      id: 'task-f1',
-      date: tomorrowStr,
-      startTime: '10:30',
-      endTime: '11:45',
-      title: 'Hastane Randevusu (Göz Polikliniği)',
-      categoryId: 'cat-errands',
-      priority: 'critical',
-      status: 'planned',
-      notes: '15 dk erken gidilecek, tahlil sonuçlarını yanına al.',
-      isAppointment: true,
-      location: 'Şehir Hastanesi B Blok',
-    },
-    {
-      id: 'task-f2',
-      date: threeDaysStr,
-      startTime: '15:00',
-      endTime: '16:30',
-      title: 'Diş Hekimi Kontrolü & Banka İşleri',
-      categoryId: 'cat-errands',
-      priority: 'high',
-      status: 'planned',
-      notes: 'Dönüşte kargo şubesine uğranacak.',
-      isAppointment: true,
-      location: 'Merkez Klinik',
-    },
-  ];
+export const LEGACY_MOCK_GOAL_IDS = ['goal-1', 'goal-2'];
+export const LEGACY_MOCK_FINANCE_IDS = ['fin-1', 'fin-2', 'fin-3', 'fin-4'];
+
+export function getInitialTasks(_todayStr: string): ScheduleTask[] {
+  return [];
 }
 
-export function getInitialDayNotes(todayStr: string): Record<string, DayAgendaNote> {
-  const tomorrow = new Date(todayStr + 'T12:00:00');
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = formatDateISO(tomorrow);
-
-  const inThreeDays = new Date(todayStr + 'T12:00:00');
-  inThreeDays.setDate(inThreeDays.getDate() + 3);
-  const threeDaysStr = formatDateISO(inThreeDays);
-
-  return {
-    [todayStr]: {
-      date: todayStr,
-      summaryNote: 'Bugün odaklanma günü. Akşam 18:00 sonrası ekran süresini azalt.',
-      highlights: ['Proje v1.0 teslimi', 'Aylık fatura kontrolü'],
-    },
-    [tomorrowStr]: {
-      date: tomorrowStr,
-      summaryNote: 'Sabah 10:30 Hastane randevusu var! Kimlik ve eski raporları unutma.',
-      highlights: ['Hastane Randevusu (10:30)', 'Eczaneye uğra'],
-    },
-    [threeDaysStr]: {
-      date: threeDaysStr,
-      summaryNote: 'Öğleden sonra dışarıda randevular var, derin çalışmayı sabaha çek.',
-      highlights: ['Diş Hekimi (15:00)', 'Kargo teslimi'],
-    },
-  };
+export function getInitialDayNotes(_todayStr: string): Record<string, DayAgendaNote> {
+  return {};
 }
 
-export const DEFAULT_HABITS: Habit[] = [
-  {
-    id: 'hab-water',
-    title: '💧 Günlük Su Tüketimi',
-    categoryId: 'cat-health',
-    targetDaysPerWeek: 7,
-    daysOfWeek: [1, 2, 3, 4, 5, 6, 0],
-    dailyTargetValue: 3,
-    unit: 'Litre',
-    stepValue: 0.5,
-    dailyProgress: {},
-    completedDates: [],
-    active: true,
-  },
-  {
-    id: 'hab-book',
-    title: '📖 Günlük Kitap Okuma',
-    categoryId: 'cat-study',
-    targetDaysPerWeek: 7,
-    daysOfWeek: [1, 2, 3, 4, 5, 6, 0],
-    dailyTargetValue: 30,
-    unit: 'Sayfa',
-    stepValue: 10,
-    dailyProgress: {},
-    completedDates: [],
-    active: true,
-  },
-  {
-    id: 'hab-clean-food',
-    title: '🥗 Şekersiz / Temiz Beslenme',
-    categoryId: 'cat-health',
-    targetDaysPerWeek: 6,
-    daysOfWeek: [1, 2, 3, 4, 5, 6, 0],
-    dailyTargetValue: 1,
-    unit: 'Gün',
-    stepValue: 1,
-    dailyProgress: {},
-    completedDates: [],
-    active: true,
-  },
-  {
-    id: 'hab-steps',
-    title: '🚶 Günlük Yürüyüş / Adım',
-    categoryId: 'cat-health',
-    targetDaysPerWeek: 5,
-    daysOfWeek: [1, 2, 3, 4, 5, 6, 0],
-    dailyTargetValue: 10000,
-    unit: 'Adım',
-    stepValue: 2500,
-    dailyProgress: {},
-    completedDates: [],
-    active: true,
-  },
-];
+export const DEFAULT_HABITS: Habit[] = [];
 
-export const DEFAULT_GOALS: LifeGoal[] = [
-  {
-    id: 'goal-1',
-    title: 'Kişisel Yazılım / Proje Hedefini Tamamla',
-    deadline: '2026-12-31',
-    progress: 65,
-    categoryId: 'cat-work',
-    milestones: [
-      { id: 'm1', text: 'Mimari tasarımı bitir', done: true },
-      { id: 'm2', text: 'Günlük Excel-tarzı zamanlayıcıyı kur', done: true },
-      { id: 'm3', text: '30 gün kesintisiz veri kaydet', done: false },
-    ],
-  },
-  {
-    id: 'goal-2',
-    title: 'Fiziksel Kondisyon & Sağlık Rutini',
-    deadline: '2026-11-30',
-    progress: 45,
-    categoryId: 'cat-health',
-    milestones: [
-      { id: 'm4', text: 'Haftada 4 gün antrenman ortalaması yakala', done: true },
-      { id: 'm5', text: 'Uyku saatlerini 23:30 - 07:30 arasına sabitle', done: false },
-    ],
-  },
-];
+export const DEFAULT_GOALS: LifeGoal[] = [];
 
-export const DEFAULT_FINANCE: FinanceEntry[] = [
-  { id: 'fin-1', date: '2026-10-01', title: 'Aylık Gelir / Maaş', amount: 65000, type: 'income', category: 'Gelir' },
-  { id: 'fin-2', date: '2026-10-05', title: 'Sabit Faturalar & Kira', amount: 18500, type: 'expense', category: 'Barınma' },
-  { id: 'fin-3', date: '2026-10-12', title: 'Mutfak & Market Alışverişi', amount: 4200, type: 'expense', category: 'Gıda' },
-  { id: 'fin-4', date: '2026-10-15', title: 'Yazılım & Bulut Abonelikleri', amount: 950, type: 'expense', category: 'Gelişim' },
-];
+export const DEFAULT_FINANCE: FinanceEntry[] = [];
 
 export const WEEKDAY_OPTIONS: { day: number; short: string; label: string }[] = [
   { day: 1, short: 'Pzt', label: 'Pazartesi' },
@@ -358,39 +147,6 @@ export const WEEKDAY_OPTIONS: { day: number; short: string; label: string }[] = 
   { day: 0, short: 'Paz', label: 'Pazar' },
 ];
 
-export const DEFAULT_RECURRING_ROUTINES: RecurringRoutine[] = [
-  {
-    id: 'rout-shift',
-    title: 'Mesai / Ana İş Saatleri',
-    startTime: '09:00',
-    endTime: '18:00',
-    categoryId: 'cat-work',
-    priority: 'critical',
-    daysOfWeek: [1, 2, 3, 4, 5], // Pazartesi - Cuma otomatik!
-    notes: 'Sabit iş mesaisi (1 kez tanımlandı, her hafta içi otomatik eklenir)',
-    active: true,
-  },
-  {
-    id: 'rout-morning',
-    title: 'Sabah Rutini, Kahvaltı & Hazırlık',
-    startTime: '07:45',
-    endTime: '08:45',
-    categoryId: 'cat-routine',
-    priority: 'medium',
-    daysOfWeek: [1, 2, 3, 4, 5, 6, 0], // Her gün otomatik!
-    notes: 'Kahvaltı, su ve güne hazırlık',
-    active: true,
-  },
-  {
-    id: 'rout-sport',
-    title: 'Akşam Antrenmanı & Yürüyüş',
-    startTime: '19:00',
-    endTime: '20:15',
-    categoryId: 'cat-health',
-    priority: 'high',
-    daysOfWeek: [1, 3, 5], // Pzt, Çar, Cum otomatik!
-    notes: 'Düzenli spor bloğu',
-    active: true,
-  },
-];
+export const DEFAULT_RECURRING_ROUTINES: RecurringRoutine[] = [];
+
 

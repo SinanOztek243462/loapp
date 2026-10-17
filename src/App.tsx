@@ -20,6 +20,11 @@ import {
   DEFAULT_FINANCE,
   DEFAULT_REWARDS,
   DEFAULT_RECURRING_ROUTINES,
+  LEGACY_MOCK_TASK_IDS,
+  LEGACY_MOCK_ROUTINE_IDS,
+  LEGACY_MOCK_HABIT_IDS,
+  LEGACY_MOCK_GOAL_IDS,
+  LEGACY_MOCK_FINANCE_IDS,
   getInitialTasks,
   getInitialDayNotes,
   formatDateISO,
@@ -48,6 +53,7 @@ import { PointsAndRewardsView } from './components/PointsAndRewardsView';
 import { ApprovalModal } from './components/ApprovalModal';
 import { LootDropPopup } from './components/LootDropPopup';
 import { RecurringRoutinesModal } from './components/RecurringRoutinesModal';
+import { TutorialModal } from './components/TutorialModal';
 import {
   SystemSettingsModal,
   LifeOSFullBackupData,
@@ -68,6 +74,7 @@ import {
   Gift,
   Repeat,
   ShieldCheck,
+  HelpCircle,
 } from 'lucide-react';
 
 export function App() {
@@ -81,7 +88,7 @@ export function App() {
 
   const [selectedDate, setSelectedDate] = useState<string>(todayStr);
 
-  // Persistent States in localStorage
+  // Persistent States in localStorage (with automatic cleanup of legacy demo/mockup items)
   const [categories] = useState<Category[]>(() => {
     const saved = localStorage.getItem('lifeos_categories_v2');
     return saved ? JSON.parse(saved) : DEFAULT_CATEGORIES;
@@ -89,23 +96,40 @@ export function App() {
 
   const [tasks, setTasks] = useState<ScheduleTask[]>(() => {
     const saved = localStorage.getItem('lifeos_tasks');
-    return saved ? JSON.parse(saved) : getInitialTasks(todayStr);
+    if (!saved) return getInitialTasks(todayStr);
+    try {
+      const parsed: ScheduleTask[] = JSON.parse(saved);
+      return parsed.filter(
+        (t) =>
+          !LEGACY_MOCK_TASK_IDS.includes(t.id) &&
+          !(t.routineTemplateId && LEGACY_MOCK_ROUTINE_IDS.includes(t.routineTemplateId))
+      );
+    } catch {
+      return [];
+    }
   });
 
   const [dayNotes, setDayNotes] = useState<Record<string, DayAgendaNote>>(() => {
     const saved = localStorage.getItem('lifeos_day_notes');
-    const parsed: Record<string, DayAgendaNote> = saved
-      ? JSON.parse(saved)
-      : getInitialDayNotes(todayStr);
-    // Clean legacy recurring water intake note from one-off agenda highlights
-    Object.keys(parsed).forEach((dateKey) => {
-      if (parsed[dateKey]?.highlights) {
-        parsed[dateKey].highlights = parsed[dateKey].highlights.filter(
-          (h) => !h.toLowerCase().includes('su tüketimi')
-        );
-      }
-    });
-    return parsed;
+    if (!saved) return getInitialDayNotes(todayStr);
+    try {
+      const parsed: Record<string, DayAgendaNote> = JSON.parse(saved);
+      const mockSummaries = [
+        'Bugün odaklanma günü. Akşam 18:00 sonrası ekran süresini azalt.',
+        'Sabah 10:30 Hastane randevusu var! Kimlik ve eski raporları unutma.',
+        'Öğleden sonra dışarıda randevular var, derin çalışmayı sabaha çek.',
+      ];
+      const cleaned: Record<string, DayAgendaNote> = {};
+      Object.keys(parsed).forEach((dateKey) => {
+        const item = parsed[dateKey];
+        if (!item) return;
+        if (mockSummaries.includes(item.summaryNote)) return;
+        cleaned[dateKey] = item;
+      });
+      return cleaned;
+    } catch {
+      return {};
+    }
   });
 
   const [habits, setHabits] = useState<Habit[]>(() => {
@@ -113,12 +137,7 @@ export function App() {
     if (!saved) return DEFAULT_HABITS;
     try {
       const parsed: Habit[] = JSON.parse(saved);
-      // Upgrade any legacy habit items that lack dailyTargetValue/unit
-      const hasQuotaFields = parsed.some((h) => h.dailyTargetValue !== undefined);
-      if (!hasQuotaFields) {
-        return DEFAULT_HABITS;
-      }
-      return parsed;
+      return parsed.filter((h) => !LEGACY_MOCK_HABIT_IDS.includes(h.id));
     } catch {
       return DEFAULT_HABITS;
     }
@@ -126,12 +145,24 @@ export function App() {
 
   const [goals, setGoals] = useState<LifeGoal[]>(() => {
     const saved = localStorage.getItem('lifeos_goals');
-    return saved ? JSON.parse(saved) : DEFAULT_GOALS;
+    if (!saved) return DEFAULT_GOALS;
+    try {
+      const parsed: LifeGoal[] = JSON.parse(saved);
+      return parsed.filter((g) => !LEGACY_MOCK_GOAL_IDS.includes(g.id));
+    } catch {
+      return DEFAULT_GOALS;
+    }
   });
 
   const [finance, setFinance] = useState<FinanceEntry[]>(() => {
     const saved = localStorage.getItem('lifeos_finance');
-    return saved ? JSON.parse(saved) : DEFAULT_FINANCE;
+    if (!saved) return DEFAULT_FINANCE;
+    try {
+      const parsed: FinanceEntry[] = JSON.parse(saved);
+      return parsed.filter((f) => !LEGACY_MOCK_FINANCE_IDS.includes(f.id));
+    } catch {
+      return DEFAULT_FINANCE;
+    }
   });
 
   const [rewards, setRewards] = useState<RewardItem[]>(() => {
@@ -170,7 +201,13 @@ export function App() {
   // Recurring Daily Routines & Work Shifts (Entered ONCE, auto-populated on matching weekdays)
   const [recurringRoutines, setRecurringRoutines] = useState<RecurringRoutine[]>(() => {
     const saved = localStorage.getItem('lifeos_recurring_routines');
-    return saved ? JSON.parse(saved) : DEFAULT_RECURRING_ROUTINES;
+    if (!saved) return DEFAULT_RECURRING_ROUTINES;
+    try {
+      const parsed: RecurringRoutine[] = JSON.parse(saved);
+      return parsed.filter((r) => !LEGACY_MOCK_ROUTINE_IDS.includes(r.id));
+    } catch {
+      return DEFAULT_RECURRING_ROUTINES;
+    }
   });
 
   const [skippedRoutineKeys, setSkippedRoutineKeys] = useState<string[]>(() => {
@@ -181,6 +218,7 @@ export function App() {
   const [isRoutinesModalOpen, setIsRoutinesModalOpen] = useState(false);
   const [routinesModalTab, setRoutinesModalTab] = useState<'shifts' | 'quotas'>('shifts');
   const [isSystemModalOpen, setIsSystemModalOpen] = useState(false);
+  const [isTutorialModalOpen, setIsTutorialModalOpen] = useState(false);
 
   // Live Clock & Background Task Expiration Watcher
   const [now, setNow] = useState<Date>(() => new Date());
@@ -223,6 +261,20 @@ export function App() {
     if (Array.isArray(data.lootPool)) setLootPool(data.lootPool);
     if (Array.isArray(data.droppedItems)) setDroppedItems(data.droppedItems);
     if (typeof data.pityStreak === 'number') setPityStreak(data.pityStreak);
+    playNotificationSound('complete');
+  };
+
+  const handleResetAllData = () => {
+    setTasks([]);
+    setRecurringRoutines([]);
+    setSkippedRoutineKeys([]);
+    setHabits([]);
+    setFinance([]);
+    setGoals([]);
+    setDayNotes({});
+    setRedemptions([]);
+    setDroppedItems([]);
+    setPityStreak(0);
     playNotificationSound('complete');
   };
 
@@ -1019,6 +1071,16 @@ export function App() {
             </button>
           )}
 
+          {/* Interactive Tutorial / User Guide Trigger */}
+          <button
+            onClick={() => setIsTutorialModalOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl border border-indigo-500/40 bg-indigo-500/15 hover:bg-indigo-500/25 px-2.5 py-2 text-xs font-bold text-indigo-300 transition"
+            title="Hangi Buton Ne İşe Yarar? (Kullanım Rehberi)"
+          >
+            <HelpCircle className="h-4 w-4 text-indigo-400" />
+            <span className="hidden md:inline">Nasıl Kullanılır?</span>
+          </button>
+
           {/* System Startup & Backup Center Trigger */}
           <button
             onClick={() => setIsSystemModalOpen(true)}
@@ -1320,6 +1382,17 @@ export function App() {
         onClose={() => setIsSystemModalOpen(false)}
         getBackupPayload={getBackupPayload}
         onRestoreBackupPayload={handleRestoreBackupPayload}
+      />
+
+      {/* Interactive Tutorial / User Guide Modal */}
+      <TutorialModal
+        isOpen={isTutorialModalOpen}
+        onClose={() => setIsTutorialModalOpen(false)}
+        onOpenShiftsModal={() => handleOpenRoutinesModal('shifts')}
+        onOpenQuotasModal={() => handleOpenRoutinesModal('quotas')}
+        onOpenSystemModal={() => setIsSystemModalOpen(true)}
+        onNavigateView={(view) => setHierarchyView(view)}
+        onResetAllData={handleResetAllData}
       />
     </div>
   );
