@@ -4,6 +4,28 @@
 
 ---
 
+## 📸 Uygulama Ekran Görüntüleri (Screenshots)
+
+### 1. Günlük Excel Saat Tablosu, Sabit Kotalar & Kategori Pasta Grafiği
+![Günlük Plan ve Pasta Grafiği](./screenshots/01-gunluk-plan-ve-pasta-grafigi.png)
+
+### 2. RPG Ganimet Sandığı & Aylık Gelire Endeksli 5 Nadirlik Havuzu (%1 Efsanevi)
+![RPG Sandık ve Envanter](./screenshots/02-rpg-sandik-ve-envanter.png)
+
+### 3. Demirci Füzyon Ocağı: Eşya Birleştirme & Yanma Riski (10 Sıradan $\rightarrow$ 1 Nadir)
+![Demirci Eşya Birleştirme ve Yakma](./screenshots/03-demirci-esya-birlestirme-ve-yakma.png)
+
+### 4. Sandık Açılımı & Gerçek Hayat İtem Drop Ekranı
+![Ganimet Sandığı İtem Drop](./screenshots/04-ganimet-sandigi-item-drop.png)
+
+### 5. Sabit Mesai, Hafta Sonu Rutinleri & Günlük Kotalar (1 Kez Tanımla)
+![Sabit Mesai ve Hafta Sonu Rutinleri](./screenshots/05-sabit-mesai-ve-haftasonu-rutinleri.png)
+
+### 6. Aylık Takvim, Disiplin Harf Notu Karnesi & Ajanda Önizlemesi
+![Aylık Takvim Görünümü](./screenshots/06-aylik-takvim-gorunumu.png)
+
+---
+
 ## 🎯 Çözülen Temel İş Problemleri & Analiz Kurgusu
 
 ### 1. Doğrulama Odaklı Durum Makinesi (Task Validation State Machine)
